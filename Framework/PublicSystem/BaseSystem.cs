@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using QFPlatformShooting;
 
 namespace ProjectUtil
 {
+    
     /*
         项目基础系统
             通常为 [单例] ，因此各个System一般没有继承的情况
@@ -17,34 +19,21 @@ namespace ProjectUtil
             
         BaseSystem为基本管理对象的脚本
         可将各种子System挂载到此模块的GameObject下，防止场景切换导致销毁
-        
-        需要Update的Manager可以将其更新方法加载到此脚本中的 Updates 上
+        需要Update的Manager可以将其更新方法注册到此脚本中的 Updates 上
+
+        注意：需要调整执行顺序 Execution Order
     */
     
     public class BaseSystem : MonoBehaviour
     {
         public static BaseSystem instance;
-        // public static BaseSystem Instance
-        // {
-        //     get
-        //     {
-        //         if(instance==null)
-        //         {
-        //             // 如果没初始化过，根据脚本名称创建游戏对象
-        //             var o = new GameObject(typeof(BaseSystem).Name);
-        //             instance = o.AddComponent<BaseSystem>();
-        //             GameObject.DontDestroyOnLoad(o);
-        //         }
-        //         return instance;
-        //     }
-        // }
         
-        public Action Updates;              // 需要执行的Update方法（常用于更新System的状态）
-        public MusicManager musicManager;
+        public Action Updates;
+        // public MusicManager musicManager;
 
         private void Awake() {
             Debug.Log("BaseSystem: Awake");
-            if(!instance)
+            if(instance==null)
             {
                 instance = this;
                 GameObject.DontDestroyOnLoad(gameObject);
@@ -58,13 +47,21 @@ namespace ProjectUtil
             InitSystem<ResourceLoadSystem>();
             InitSystem<ResourceSystem>();
         }
+
+        /// <summary>
+        /// 初始化目标子系统
+        /// </summary>
+        /// <typeparam name="T">子系统类</typeparam>
         public void InitSystem<T>() where T : MonoBehaviour
         {
+            // 创建子系统对象
             string systemName = typeof(T).Name;
             if(GameObject.Find(systemName)) return;
             GameObject system = new GameObject(typeof(T).Name);
             system.transform.SetParent(transform);
+            // 添加子系统脚本
             system.AddComponent<T>();
+            Console.WriteLine("<--------- 加载子系统：{0} --------->",systemName);
         }
 
 
@@ -77,7 +74,6 @@ namespace ProjectUtil
         }
 
 
-
         void Update()
         {
             transform.position = Camera.main.transform.position;
@@ -85,7 +81,4 @@ namespace ProjectUtil
         }
 
     }
-
-
-    
 }

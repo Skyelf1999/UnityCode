@@ -34,6 +34,7 @@ namespace ProjectUtil
         bool isLoop;                    // 是否是循环
 
 
+        // 开始
         public void Start(float delayTime, Action<TimerUtil> onFinished, bool isLoop)
         {
             this.delayTime = delayTime;
@@ -64,9 +65,6 @@ namespace ProjectUtil
                 } 
             }
         }
+    
     }
-
-
-
-
 }

@@ -10,9 +10,8 @@ namespace ProjectUtil
 {
     /*
         组件管理
-            用字典存储可能会用到的多个组件
-            由于主要用于静态存储，不需要帧更新，所以定义为普通类
-            可以跟存储组件的类型创建不同的存储对象
+            管理目标游戏对象挂载的多个组件
+
         注：
             [只负责保存组件]
             常用于 [需要挂载很多组件的对象] ，组件无论是否激活都归此类管理
@@ -24,10 +23,27 @@ namespace ProjectUtil
     */
     public interface IBehaviourManager<T> where T : Behaviour
     {
+        /// <summary>
+        /// 激活一个可用组件
+        /// </summary>
+        /// <param name="component">接收变量</param>
         public void Active(out T component);
-        // public void Remove(out T component);
+        /// <summary>
+        /// 回收组件（取消激活，并加入未激活队列）
+        /// </summary>
+        /// <param name="component">组件</param>
+        /// <param name="callback">回收回调</param>
         public void Recycle(T component,Action<T> callback=null);
+        /// <summary>
+        /// 根据判断方法对所有组件进行回收
+        /// </summary>
+        /// <param name="judge">判断方法</param>
+        /// <param name="callback">回收回调</param>
         public void RecycleAllAuto(Func<T,bool> judge,Action<T> callback=null);
+        /// <summary>
+        /// 统一管理已激活的组件
+        /// </summary>
+        /// <param name="setCb">管理方法</param>
         public void SetAllActiveComponent(Action<T> setCb);
     }
 
@@ -102,13 +118,12 @@ namespace ProjectUtil
         }
 
 
-        // 对激活的组件进行统一操作
         public void SetAllActiveComponent(Action<T> setCb)
         {
             foreach(T component in cpActivated) setCb(component);
         }
 
-        // 清空存储数据
+
         public override void Clear()
         {
             foreach(T cp in cpActivated) GameObject.Destroy(cp);

@@ -13,7 +13,8 @@ namespace ProjectUtil
         资源加载System
             由于非MonoBehaviour无法启动协程，因此异步加载必须要由此对象实现
             只保存静态、动态加载方法，不负责保存家加载结果
-            使用时，请传入资源在 Resources/ 下完整路径
+            使用时，请传入资源在  下的完整路径
+                例如：Prefab/Bullet
 
     */
     public interface IResourceLoadSystem
@@ -33,23 +34,21 @@ namespace ProjectUtil
     public class ResourceLoadSystem : MonoBehaviour , IResourceLoadSystem
     {
         public static ResourceLoadSystem instance;
-        // public static ResourceLoadSystem Instance
-        // {
-        //     get{
-        //         if(instance==null)
-        //         {
-        //             instance = this;
-        //         }
-        //         return instance;
-        //     }
-        // }
-
         UnityEngine.Object result;
 
 
         private void Awake() {
             Debug.Log("ResourceLoadSystem: Awake");
             instance = this;
+        }
+
+
+        // 静态加载
+        public T SyncLoad<T>(string name) where T :UnityEngine.Object
+        {
+            Debug.Log("静态加载 目标："+name);
+            T ret = Resources.Load<T>(name);
+            return ret;
         }
 
 
@@ -80,18 +79,9 @@ namespace ProjectUtil
                 Debug.Log("加载成功");
             }
             else Debug.Log("加载失败");
-            
+            // 调用回调处理加载结果
             cb?.Invoke(result);
         }
 
-        
-
-        // 静态加载
-        public T SyncLoad<T>(string name) where T :UnityEngine.Object
-        {
-            Debug.Log("静态加载 目标："+name);
-            T ret = Resources.Load<T>(name);
-            return ret;
-        }
     }
 }

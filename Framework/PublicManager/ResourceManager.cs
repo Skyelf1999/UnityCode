@@ -10,8 +10,9 @@ using QFPlatformShooting;
 namespace ProjectUtil
 {
     /*
-        资源管理系统
+        基础资源管理类
             负责用字典 [存储] 项目加载的资源，具体的 [加载] 由 [ResourceLoadManager] 实现
+            支持：Sprite、AudioClip等
             存储结构：[资源名称]--[资源]        （资源名称都是Resources/下的完整路径，以避免同名文件）
             不存在的资源会自动加载
             可以跟存储对象的类型创建不同的存储对象
@@ -19,6 +20,7 @@ namespace ProjectUtil
         注：
             只负责存储未使用的资源，正在使用的资源请在使用处管理
             传入的目标资源名称需要是 Resources/ 下的完整路径
+            通常只有ResourceSystem持有一个此对象
 
         示例：
             管理加载的各种图片：
@@ -28,11 +30,23 @@ namespace ProjectUtil
     */
     public interface IResourceManager<T> where T :UnityEngine.Object
     {
-        // 获取一个对应类型的资源
+        /// <summary>
+        /// 获取目标资源
+        /// </summary>
+        /// <param name="name">资源在Resources下的路径</param>
+        /// <returns>资源</returns>
         public T Get(string name);
-        // 获取一个对应类型的资源（用参数直接接收结果）
+        /// <summary>
+        /// 获取一个对应类型的资源（用参数直接接收结果）
+        /// </summary>
+        /// <param name="name">资源在Resources下的路径</param>
+        /// <param name="ret">接收参数</param>
         public void Get(string name,out T ret);
-        // 获取一个对应类型的资源（用回调函数处理）
+        /// <summary>
+        /// 获取一个对应类型的资源（用回调函数处理）
+        /// </summary>
+        /// <param name="name">资源在Resources下的路径</param>
+        /// <param name="callBack">回调</param>
         public void Get(string name,Action<T> callBack);
     }
 
@@ -61,13 +75,14 @@ namespace ProjectUtil
         }
 
 
+        // 清空当前存储的资源
         public override void Clear()
         {
             resource.Clear();
         }
 
 
-        public T Get(string name)
+        public virtual T Get(string name)
         {
             T ret;
             if(resource.TryGetValue(name,out ret)) return ret;
@@ -78,7 +93,7 @@ namespace ProjectUtil
 
 
         // 取出对象（引用型加载结果/回调函数）
-        public void Get(string name,out T ret) 
+        public virtual void Get(string name,out T ret) 
         {
             if(resource.TryGetValue(name,out ret)) return;
 
@@ -88,7 +103,7 @@ namespace ProjectUtil
         }
 
 
-        public void Get(string name,Action<T> callBack) 
+        public virtual void Get(string name,Action<T> callBack) 
         {
             T ret;
             // 若当前资源库中 有目标对象，取出、执行回调，返回

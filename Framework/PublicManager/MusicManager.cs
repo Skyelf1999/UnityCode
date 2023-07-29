@@ -15,7 +15,8 @@ namespace ProjectUtil
                 音效：大量短音频资源，可能会重复播放、叠加播放
             因此：
                 Bgm用一个组件控制
-                音效用 资源管理+组件管理 控制
+                音效用 ResourceManager + 继承BehaviourManager 控制
+                （扩展模式）
     */
     public interface IMusicManager
     {
@@ -23,11 +24,27 @@ namespace ProjectUtil
         public float SoundVolume {get;set;}
         public ResourceManager<AudioClip> ClipManager {get;}
 
-        // 播放Bgm：由于Bgm同一时间唯一，因此只提供播放方法即可
+        /// <summary>
+        /// 播放Bgm（由于Bgm同一时间唯一，因此只提供播放方法即可）
+        /// </summary>
+        /// <param name="name">BGM文件名称</param>
         public void PlayBgm(string name);
+        /// <summary>
+        /// 停止BGM
+        /// </summary>
+        /// <param name="isPause">是否选择暂停</param>
         public void StopBgm(bool isPause);
-        // 播放音效：支持用回调控制目标音效所在的音频组件
+        /// <summary>
+        /// 播放音效：支持用回调控制目标音效所在的音频组件
+        /// </summary>
+        /// <param name="name">音效名称</param>
+        /// <param name="callback">回调</param>
+        /// <param name="target">挂载对象</param>
         public void PlaySound(string name,Action<AudioSource> callback=null,GameObject target=null);
+        /// <summary>
+        /// 停止音效
+        /// </summary>
+        /// <param name="sound">音效组件</param>
         public void StopSound(AudioSource sound);
     }
 
@@ -58,9 +75,11 @@ namespace ProjectUtil
         }
 
         AudioSource mBgm;               // 播放Bgm的组件
-        AudioSource tempSource;
+        AudioSource tempSource;         // 缓存变量
         FadeUtil fadeUtil;              // 实现淡入淡出效果的工具
-        // 存储加载的声音资源 
+        /// <summary>
+        /// 音乐资源管理对象（使用ResourceSystem的管理对象）
+        /// </summary>
         ResourceManager<AudioClip> clipManager;
         public ResourceManager<AudioClip> ClipManager
         {
@@ -69,13 +88,18 @@ namespace ProjectUtil
         
                          
         
-        
+        /// <summary>
+        /// 创建音乐管理对象
+        /// </summary>
+        /// <param name="gameObject">目标游戏对象</param>
+        /// <param name="soundDir">音效默认路径</param>
+        /// <param name="bgmDir">BGM默认路径</param>
+        /// <returns></returns>
         public MusicManager(GameObject gameObject,string soundDir=null,string bgmDir = null) : base(gameObject)
         {
-            soundDir = "Audio/Sound/";
-            bgmDir = "Audio/BGM/";
-            if(soundDir!=null) this.soundDir = soundDir;
-            if(bgmDir!=null) this.bgmDir = bgmDir;
+
+            this.soundDir = soundDir==null ? "Audio/Sound/" : soundDir;
+            this.bgmDir = bgmDir==null ? "Audio/BGM/" : bgmDir;
             
             bgmVolume = 1f;
             soundVolume = 1f;
@@ -91,8 +115,10 @@ namespace ProjectUtil
         }
 
 
-        // 需要在对象的Update中执行
-        public void Update()
+        /// <summary>
+        /// MusicManager的更新方法：刷新渐变工具
+        /// </summary>
+        public override void ManagerUpdate()
         {
             if(fadeUtil.State!=FadeSate.Stop)
             {
@@ -119,12 +145,14 @@ namespace ProjectUtil
             if(bgm) Debug.Log("正在处理获取的Bgm："+bgm.name);
             if(!mBgm.isPlaying)     // 当前无播放的Bgm
             {
+                // Debug.Log("直接播放Bgm："+bgm.name);
                 fadeUtil.SetState(FadeSate.In,true,null);
                 mBgm.clip = bgm;
                 mBgm.Play();
             }
             else                    // 当前有正在播放的Bgm
             {
+                // Debug.Log("Bgm渐入"+bgm.name);
                 fadeUtil.SetState(FadeSate.Out,false,()=>{
                     // 之前Bgm淡出后，渐入当前Bgm
                     mBgm.Stop();
@@ -159,7 +187,7 @@ namespace ProjectUtil
             });
         }
 
-        // 主要针对循环音效
+  
         public void StopSound(AudioSource sound)
         {
             sound.Stop();
@@ -170,10 +198,6 @@ namespace ProjectUtil
             RecycleAt(index,(c)=>{c.Stop();});
         }
 
-        public override void Clear()
-        {
-            base.Clear();
-        }
     }
 
 

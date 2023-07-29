@@ -14,9 +14,9 @@ namespace ProjectUtil
     */
     public enum FadeSate
     {
-        Stop,
-        In,
-        Out
+        Stop,       // 停止
+        In,         // 渐入（渐变变量增加）
+        Out         // 渐出
     }
 
     public interface IFadeUtil
@@ -65,6 +65,7 @@ namespace ProjectUtil
             Debug.Log("FadeUtil构造完毕");
         }
 
+        // 设置渐变范围（最大最小值）
         public void SetRange(float min,float max)
         {
             this.min = min;

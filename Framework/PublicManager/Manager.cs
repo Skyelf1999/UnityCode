@@ -9,13 +9,9 @@ using UnityEngine;
 namespace ProjectUtil
 {
     /*
-        通用Manager基类
-            Manager相当于与拥有特定功能的工具类，一般用于 [存储各种对象] 
-            不直接控制游戏对象，即不直接作为游戏脚本挂载，因此不继承Monobehaviour
-            但是部分功能必须依赖Monobehaviour的特性
-            因此可能需要在对应的System中创建Manager对象来使用预定义的功能
-            有些系统也在特定情况下也需要对应的System执行操作
-            使用时，请先 [创建Manager对象]
+        通用Manager对象管理抽象类
+
+        主要功能：管理类对象
 
         注：
             由于一般被System使用，而System有可能不在切换场景时摧毁
@@ -23,14 +19,21 @@ namespace ProjectUtil
             
         例如：
             MusicSystem 创建 BehaviourManager 来管理AudioSource组件
-                         创建 ResourceManager 来管理需要播放的音乐资源
+                        创建 ResourceManager 来管理需要播放的音乐资源
             资源管理ResourceManager 需要 ResourceLoadSystem 来执行加载资源的具体操作
     */
 
     public abstract class Manager<T>
     {
-        protected string[] relativeSystems;             // 本Manager工作所需要的System支持
-        protected GameObject userObject;                // 使用本Manager的游戏对象
+        /// <summary>
+        /// 本Manager工作所需要的System名称
+        /// </summary>
+        protected string[] relativeSystems;
+        /// <summary>
+        /// 使用本Manager的游戏对象
+        /// </summary>
+        protected GameObject userObject;
+
 
         public Manager(GameObject gameObject)
         {
@@ -39,8 +42,16 @@ namespace ProjectUtil
             CheckSystem();
         }
 
+
+        /// <summary>
+        /// 初始化所需System名称数组
+        /// </summary>
         protected abstract void initRelativeSystems();
 
+        /// <summary>
+        /// 检查是否缺少所需的System
+        /// </summary>
+        /// <returns></returns>
         protected bool CheckSystem()
         {
             if(relativeSystems==null) return true;
@@ -58,6 +69,17 @@ namespace ProjectUtil
             return true;
         }
 
+        /// <summary>
+        /// 清空管理对象
+        /// </summary>
         public abstract void Clear();
+
+        /// <summary>
+        /// Manager更新方法
+        /// </summary>
+        public virtual void ManagerUpdate()
+        {
+
+        }
     }
 }
