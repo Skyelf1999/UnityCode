@@ -10,8 +10,9 @@ namespace ProjectUtil
 {
     /*
         组件管理
-            管理目标游戏对象挂载的多个组件
-
+            用字典存储可能会用到的多个组件
+            由于主要用于静态存储，不需要帧更新，所以定义为普通类
+            可以跟存储组件的类型创建不同的存储对象
         注：
             [只负责保存组件]
             常用于 [需要挂载很多组件的对象] ，组件无论是否激活都归此类管理
@@ -118,12 +119,13 @@ namespace ProjectUtil
         }
 
 
+        // 对激活的组件进行统一操作
         public void SetAllActiveComponent(Action<T> setCb)
         {
             foreach(T component in cpActivated) setCb(component);
         }
 
-
+        // 清空存储数据
         public override void Clear()
         {
             foreach(T cp in cpActivated) GameObject.Destroy(cp);

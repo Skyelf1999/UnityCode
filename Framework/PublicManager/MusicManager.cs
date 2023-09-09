@@ -187,7 +187,7 @@ namespace ProjectUtil
             });
         }
 
-  
+        // 主要针对循环音效
         public void StopSound(AudioSource sound)
         {
             sound.Stop();
@@ -198,6 +198,10 @@ namespace ProjectUtil
             RecycleAt(index,(c)=>{c.Stop();});
         }
 
+        public override void Clear()
+        {
+            base.Clear();
+        }
     }
 
 

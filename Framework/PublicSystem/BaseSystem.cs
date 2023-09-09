@@ -1,15 +1,12 @@
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using QFPlatformShooting;
 
 
 namespace ProjectUtil
 {
-    
     /*
         项目基础系统
             通常为 [单例] ，因此各个System一般没有继承的情况
@@ -28,12 +25,12 @@ namespace ProjectUtil
     {
         public static BaseSystem instance;
         
-        public Action Updates;
+        public Action Updates;              // 需要执行的Update方法（常用于更新System的状态）
         // public MusicManager musicManager;
 
         private void Awake() {
             Debug.Log("BaseSystem: Awake");
-            if(instance==null)
+            if(!instance)
             {
                 instance = this;
                 GameObject.DontDestroyOnLoad(gameObject);
@@ -47,11 +44,10 @@ namespace ProjectUtil
             InitSystem<ResourceLoadSystem>();
             InitSystem<ResourceSystem>();
         }
-
         /// <summary>
-        /// 初始化目标子系统
+        /// 初始化指定的系统
         /// </summary>
-        /// <typeparam name="T">子系统类</typeparam>
+        /// <typeparam name="T">System类</typeparam>
         public void InitSystem<T>() where T : MonoBehaviour
         {
             // 创建子系统对象

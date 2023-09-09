@@ -48,6 +48,7 @@ namespace ProjectUtil
         /// <param name="name">名称</param>
         /// <param name="setCb">管理方法</param>
         public void SetAllActiveObject(string dir, string name,Action<GameObject> setCb);
+
     }
 
 
@@ -74,7 +75,7 @@ namespace ProjectUtil
         }
 
 
-        // 添加可能需要的Prefab
+        // 添加可能需要的Prefab（完整路径：dir+name）
         public void AddPrefab(string dir, string name)
         {
             prefabs.Get(dir+name);
@@ -86,6 +87,7 @@ namespace ProjectUtil
         }
 
 
+        // 获取目标类型Prefab的可用复制体
         public GameObject GetPrefabInstance(string dir, string name,Transform parent=null)
         {
             AddPrefab(dir,name);                        // 保证Prefab本体存在

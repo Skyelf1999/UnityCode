@@ -25,17 +25,22 @@ namespace ProjectUtil
     {
         float finishTime;               // 结束时间
         float delayTime;                // 计时时间
-        bool isFinished;                // 是否计时结束
+        bool isFinished = true;         // 是否计时结束
         public bool IsFinished
         {
             get {return isFinished;}
         }
-        public Action<TimerUtil> onFinished;              // 结束回调
+        public Action<TimerUtil>? onFinished;              // 结束回调
         bool isLoop;                    // 是否是循环
 
 
-        // 开始
-        public void Start(float delayTime, Action<TimerUtil> onFinished, bool isLoop)
+        /// <summary>
+        /// 启动计时器
+        /// </summary>
+        /// <param name="delayTime">倒计时时长</param>
+        /// <param name="onFinished">结束回调</param>
+        /// <param name="isLoop">是否循环执行</param>
+        public void Start(float delayTime, Action<TimerUtil>? onFinished, bool isLoop)
         {
             this.delayTime = delayTime;
             finishTime = Time.time+delayTime;
@@ -65,6 +70,9 @@ namespace ProjectUtil
                 } 
             }
         }
-    
     }
+
+
+
+
 }

@@ -5,22 +5,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using QFramework;
-using QFPlatformShooting;
 
 namespace ProjectUtil
 {
     /*
-        基础资源管理类
+        资源管理工具类
             负责用字典 [存储] 项目加载的资源，具体的 [加载] 由 [ResourceLoadManager] 实现
-            支持：Sprite、AudioClip等
             存储结构：[资源名称]--[资源]        （资源名称都是Resources/下的完整路径，以避免同名文件）
-            不存在的资源会自动加载
+            不存在的资源会使用 ResourceLoadSystem 自动加载
             可以跟存储对象的类型创建不同的存储对象
 
         注：
             只负责存储未使用的资源，正在使用的资源请在使用处管理
             传入的目标资源名称需要是 Resources/ 下的完整路径
-            通常只有ResourceSystem持有一个此对象
 
         示例：
             管理加载的各种图片：
@@ -75,7 +72,6 @@ namespace ProjectUtil
         }
 
 
-        // 清空当前存储的资源
         public override void Clear()
         {
             resource.Clear();
