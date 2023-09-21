@@ -17,6 +17,7 @@ namespace ProjectUtil
         
         注：
             请传入 [Resources/]下 的完整路径
+            例如：bulletManager.GetPrefabInstance("Prefabs/","CogBullet")
     */
 
     public interface IRepPrefabObjManager

@@ -201,6 +201,7 @@ namespace ProjectUtil
         public override void Clear()
         {
             base.Clear();
+            ClipManager.Clear();
         }
     }
 

@@ -45,7 +45,7 @@ namespace ProjectUtil
             InitSystem<ResourceSystem>();
         }
         /// <summary>
-        /// 初始化指定的系统
+        /// 初始化指定的系统（自动创建游戏对象）
         /// </summary>
         /// <typeparam name="T">System类</typeparam>
         public void InitSystem<T>() where T : MonoBehaviour

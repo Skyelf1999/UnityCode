@@ -12,7 +12,7 @@ namespace ProjectUtil
         资源加载System
             由于非MonoBehaviour无法启动协程，因此异步加载必须要由此对象实现
             只保存静态、动态加载方法，不负责保存家加载结果
-            使用时，请传入资源在 Resources/ 下完整路径
+            使用时，请传入资源在 [“Resources/” 下的完整路径]
 
     */
     public interface IResourceLoadSystem
